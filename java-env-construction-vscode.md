@@ -1,4 +1,4 @@
-# 使用vscode进行Java环境基础搭建
+# 使用vscode进行Java开发环境的搭建
 
 ## 下载JDK
 
@@ -10,6 +10,11 @@
     1.Java Extension Pack（安装时其他java相关插件会自动安装）
     2.Java Debug （调试代码）
     3.Java Test Runner （单元测试）
+
+```json
+// 配置jdk路径，打开：文件-首选项-设置，添加如下用户设置：
+"java.home": "安装java的jdk的路径"
+```
 
 ## 编写我们的第一个java程序
 
