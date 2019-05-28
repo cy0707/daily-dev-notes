@@ -33,9 +33,11 @@ public class HelloWorld {
 # 此时在我们的目录下生成了 HelloWorld.class文件
 javac HelloWorld.java
 
-# 执行这个字节码文件, 不能在java命令，后面添加class后缀名，会出现错误: 仅当显式请求注释处理时才接受类名称
+# 执行这个字节码文件, 不能在java命令，后面添加class后缀名，
+#会出现错误: 仅当显式请求注释处理时才接受类名称
 java HelloWorld
-# java 命令后的参数是 java 类名，而不是字节码文件的文件名，也不是 java 源文件文件名，java要求你的文件和你的类名严格对应的
+# java 命令后的参数是 java 类名，而不是字节码文件的文件名，
+#也不是 java 源文件文件名，java要求你的文件和你的类名严格对应的
 
 # 此时控制台会输出
 hello world
