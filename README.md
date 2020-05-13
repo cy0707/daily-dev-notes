@@ -20,3 +20,8 @@
 ## 面试
 
 * [工作四年的面试总结](./interview/2020-3.md)
+
+## 工作中遇到的问题/TODO
+
+1. `$ref`的`v-for`中`img`标签第一次获取不到offsetHeight和offsetTop属性
+2. swiper的复制双向联动的activeIndex和realIndex
