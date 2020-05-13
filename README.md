@@ -21,6 +21,10 @@
 
 * [工作四年的面试总结](./interview/2020-3.md)
 
+## 学习计划
+
+* [学习计划](./plan/2020-2-8.md)
+
 ## 工作中遇到的问题/TODO
 
 1. `$ref`的`v-for`中`img`标签第一次获取不到offsetHeight和offsetTop属性
