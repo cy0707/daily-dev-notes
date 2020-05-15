@@ -12,11 +12,6 @@
 
 * [基于uni-app的微信小程序、H5迁移到支付宝小程序问题集合](./Alipay/基于uni-app的微信小程序、H5迁移到支付宝小程序问题集合.md)
 
-## 环境搭建
-
-* [使用vscode进行Dart开发环境的搭建](./env-construction/dart-env-construction-vscode.md)
-* [使用vscode进行Java开发环境的搭建](./env-construction/java-env-construction-vscode.md)
-
 ## 面试
 
 * [工作四年的面试总结](./interview/2020-3.md)
