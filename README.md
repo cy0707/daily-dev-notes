@@ -22,7 +22,7 @@
 
 ## 工作中遇到的问题/TODO
 
-1. `$ref`的`v-for`中`img`标签第一次获取不到offsetHeight和offsetTop属性
+1. [Vue中v-for循环的ref-img标签第一次获取不到offsetHeight和offsetTop属性](./problemSummary/Vue中关于v-for中ref获取问题.md)
 2. swiper的复制双向联动的activeIndex和realIndex
 3. 高德地图小程序引入的实现--实现关键字搜索，当前位置，移动定点demo
 4. 饿了么小程序中-菜单左右联动实现
