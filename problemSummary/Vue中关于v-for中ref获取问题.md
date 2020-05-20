@@ -76,6 +76,39 @@ handleImgContentScroll () {
 ## 出现问题--问题描述
 
 功能能很好的实现，可问题就出现在第一次，打开这个弹窗的时，滑动页面时候，左边对应的菜单，无任何变化。
-没有任何选中效果，第二次的就能正常工作，最后发现`scrollTopList`获取图片的`offsetHeight`和`offsetTop`全是`0`
+没有任何选中效果，第二次的就能正常工作，最后发现第一次打开弹窗的时候`scrollTopList`获取图片的`offsetHeight`和`offsetTop`全是`0`
 
+我陷入了思考，为什么第一次获取不到offsetHeight和offsetTop，应该是跟渲染有关。我尝试了$nextTick, setTimeout等异步处理。
+结果还是一样，此时，我不知道该怎么做了，休息了一下，当一个问题半天没有解决，此时不要自己死磕，这是工作，时间有限，我马上请求外援，
+咨询了同事，描述了问题，最后同事以他的理解百度到答案了，采取了以下的写法（百度关键词挺重要）
 
+```js
+mounted () {
+    // 保存每个图片的滚动范围 起始点--offsetTop, 结束点 offsetTop + offsetHeight
+    this.scrollTopList = []
+    this.imgList.forEach((item, index) => {
+       this.$refs['bigImage-' + index].onLoad = () => {
+           this.scrollTopList.push({
+                top: this.$refs['bigImage-' + index][0].offsetTop,
+                bottom: this.$refs['bigImage-' + index][0].offsetTop
+                + this.$refs['bigImage-' + index][0].offsetHeight
+           })
+       }
+    })
+    this.handleImgContentScroll()
+}
+```
+
+正当我开心的时候，困扰我一下午的难题终于搞定了，结果又发现了一个问题，那就滑动页面时，滑动到本应该选中某个索引图片，
+但另一个索引的图片却被选中了。又经过一番思考，应该时渲染的问题，图片onload时候，不是按照forEach的顺序，所以导致
+对应的索引不一致。我采用了下面这种方式
+
+```js
+// 修改的部分---存储对应索引加载成功后的高度范围
+this.scrollTopList[index] = {
+    top: this.$refs['bigImage-' + index][0].offsetTop,
+    bottom: this.$refs['bigImage-' + index][0].offsetTop + this.$refs['bigImage-' + index][0].offsetHeight
+}
+```
+
+## 那这个真正的原因时什么呢？
