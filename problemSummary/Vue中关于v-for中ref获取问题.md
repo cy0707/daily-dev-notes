@@ -110,5 +110,3 @@ this.scrollTopList[index] = {
     bottom: this.$refs['bigImage-' + index][0].offsetTop + this.$refs['bigImage-' + index][0].offsetHeight
 }
 ```
-
-## 那这个真正的原因时什么呢？
