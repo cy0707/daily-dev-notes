@@ -34,9 +34,66 @@ console.log(this.a) // 11
 就和函数调用方式存在极大的关系，根据函数的调用方法，我们可以分为以下几种
 
 1. 作为独立函数调用
+```js
+function test () {
+  console.log(this)
+}
+test()
+```
+如果在非严格模式下，在全局作用域中，调用test方式，输出window对象。
+如果在严格模式下，在全局作用域中，调用test方式，输出的undefined
+
+因为当我们在全局作用域中，调用`test()`方式时，创建一个执行环境，执行环境this属性，默认为undefined，
+而这个函数，没有显示的this绑定操作，在非严格模式，默认的把window对象绑定到this对象上，而非严格默认，禁止了这种操作。
+导致在非严格模式下，输出的undefined。
+
 2. 作为对象方法调用
-3. 使用call, apply进行调用
+```js
+function test () {
+  console.log(this)
+}
+let a = {
+  hello: '我是对象方法调用形式',
+  test1: function () {
+     console.log(this)
+  },
+  test: test
+}
+
+a.test1() // {hello: "我是对象方法调用形式", test1: ƒ, test: ƒ}
+a.test() // {hello: "我是对象方法调用形式", test1: ƒ, test: ƒ}
+```
+通过上述例子，我们可以发现，通过用对象的方法进行调用，函数的this对象会被绑定为该对象
+
+3. 使用call, apply进行调用(显式的更改this对象)
+```js
+function test () {
+  console.log(this)
+}
+let b = {
+  hello: '显示更改this对象',
+  test: test
+}
+let c = {
+  hello: 'call显示更改this对象'
+}
+let d = {
+  hello: 'apply显示更改this对象'
+}
+
+test() // Window {parent: Window, opener: null, top: Window, length: 0, frames: Window, …}
+b.test() // {hello: "显示更改this对象", test: ƒ}
+test.call(c) // {hello: "call显示更改this对象"}
+b.test.call(c) // {hello: "call显示更改this对象"}
+test.apply(d) // {hello: "apply显示更改this对象"}
+b.test.apply(d) // {hello: "apply显示更改this对象"}
+```
+
+call和apply的方法的区别在于传递参数，call(this对象,参数1,参数2,参数3....), apply(this对象，[参数1,参数2...])
+call和apply方法的第一个参数，就是函数体的this对象。
+
 4. 使用bind进行调用
+5. [使用new关键字调用](./new关键字), 详情内容查看这篇文章
 
 
 **如何理解，箭头函数中的this**
