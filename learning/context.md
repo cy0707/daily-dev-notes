@@ -5,6 +5,10 @@
 1. 当一个函数被调用的时候，会创建一个context（执行上下文）
 2. context包含this，即context>this
 3. this是context的一个属性
+4. 执行环境Execution Context分类：
+    1. Global Context，即全局的、不在任何函数里面的代码，会创建一个全局的执行环境，this绑定的window对象
+    2. Eval Context，即使用eval()函数动态执行的JS代码创建的执行环境。
+    3. Function Context，即用户自定义函数中的函数体JS代码，创建的执行环境。
 
 我们来通过一个例子具体来讲，在函数调用的时候，context和this到底代表的是什么?
 
@@ -42,11 +46,12 @@ context可以等同于大红框里面，记录了test函数，被哪里调用（
 
 1. context > this
 2. context我们代码访问不到
-3. 函数调用就是参数一个context（执行上下文）
+3. 函数调用会产生对应的一个Execution context（执行上下文）
 4. this只是这个context的一个属性
 
 ### this
 
-通过上面我们知道context到底是什么呢，context和this的关系了，那么this是个什么呢？它是如何确定呢？例如这个例子中，调用test, this为什么是window对象，这些疑问都需要我们解决，[可以看我对this的理解那篇文章](./this.md)
+通过上面我们知道context到底是什么呢，context和this的关系了，那么this是个什么呢？它是如何确定呢？例如这个例子中，
+调用test, this为什么是window对象，[这些疑问，可以看我对this的理解那篇文章，或许能受到启发](./this.md)
 
 > 最后，以上是本人从书中，教程，以及各位大佬分享的博文中，学习感悟总结得出，如果错误，还请各位小伙伴指正！

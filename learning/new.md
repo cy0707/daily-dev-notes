@@ -116,3 +116,5 @@ function newFun (fun) {
   return typeof res === 'object' ? res : emptyObj
 }
 ```
+
+> 最后，以上是本人从书中，教程，以及各位大佬分享的博文中，学习感悟总结得出，如果错误，还请各位小伙伴指正！
