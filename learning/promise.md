@@ -70,12 +70,23 @@ const PENDING = "pending"
 const RESOLVED = "resolved"
 const REJECTED = "rejected"
 
+// resolve函数
+function customResolve() {
+
+}
+
+// reject函数
+function customreJect () {
+
+}
+
 // fu--promise的状态变更函数
 function customPromise (fn) {
   // PromiseStatus
   this.status = PENDING
   // PromiseValue
   this.value = undefined
+  return fn(customResolve, customreJect)
 }
 ```
 
