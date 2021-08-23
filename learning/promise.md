@@ -62,7 +62,7 @@ p2
 //     at <anonymous>:4:12 "p2的catch"
 ```
 
-## 根据上述定义，自己实现一个promise
+> 根据上述定义，自己实现一个带resolve，reject方法最基础的promise
 
 ```js
 // 第一步三种状态
@@ -71,28 +71,172 @@ const RESOLVED = "resolved"
 const REJECTED = "rejected"
 
 // resolve函数
-function customResolve() {
-
+function customResolve(value) {
+  if (this.status === PENDING) {
+    this.status = RESOLVED
+    this.value = value
+  }
 }
 
 // reject函数
-function customreJect () {
-
+function customReject (error) {
+  if (this.status === PENDING) {
+    this.status = REJECTED
+    this.errorVal = error
+  }
 }
 
-// fu--promise的状态变更函数
-function customPromise (fn) {
+
+// ES5的方式
+function CustomPromise (fn) {
   // PromiseStatus
   this.status = PENDING
   // PromiseValue
   this.value = undefined
-  return fn(customResolve, customreJect)
+  // promise error
+  this.errorVal = undefined
+  // 方法的调用
+  fn(customResolve.bind(this), customReject.bind(this))
 }
+
+let promise1 = new CustomPromise(function (resolve, reject) {
+  resolve('调用resolve')
+  reject('调用reject')
+})
+
+console.log(promise1, '查看promise1此时状态')
+// CustomPromise {status: "resolved", 
+// value: "调用resolve", errorVal: undefined} "查看promise1此时状态"
+
 ```
 
+[完整代码详见V1](./code/promise-v1.js)
+
+## Promise的then方法
+
+* then方法是定义在原型对象Promise.prototype上
+* then方法的第一个参数是resolved状态的回调函数，第二个参数是rejected状态的回调函数，它们都是可选的
+* then方法返回的是一个新的Promise实例（注意，不是原来那个Promise实例）
+* then方法，采用链式写法
+
+> 完善上面的promise，增加then方法
+
+```js
+CustomPromise.prototype.then = function (onFulfilled, onRejected) {
+  if (this.status === RESOLVED) {
+    onFulfilled(this.value)
+  } else if (this.status === REJECTED) {
+    onRejected(this.errorVal)
+  } else {
+    console.log('此时前一个promise状态还是pending状态,按道理不会执行这里')
+    // 此时前一个promise处于pending状态，而我们的then方法是等
+    // 前一个promise的状态更改才执行resolved, rejected方法
+    // 那么前一个promise状态为pending的时候, 此时then方法该做如何处理呢?
+    // 或者什么情况下,前一个promise处于pending状态,就执行then方法呢?
+  }
+}
+
+// 例如下面这种情况
+let promise2 = new CustomPromise(function (resolve, reject) {
+  setTimeout(()=> {
+    resolve(`
+      promise处于pending状态,过3秒之后,才进行状态改变,
+      如果此时掉用then方法的话(按照现在的写法), 因为setTimeout是一个异步,
+      那么then方法就没法等待前一个promise的状态更改后,再执行
+    `)
+  }, 3000)
+})
+
+promise2.then((value) => {
+  console.log('promise状态更改了RESOLVED', value)
+}, (error) => {
+    console.log('promise状态更改了REJECTED', error)
+})
+// 我们看见此时控制台输出的内容:
+// 此时前一个promise状态还是pending状态,按道理不会执行这里
+```
+
+那么此时应该如何处理呢, 我们能确定的一点的是,then里面的方法需要等待
+前一个promise的状态变更才能执行, 就需要执行then的方法存储到一个待执行then方法数组中(自己取的名字,好理解),
+等前一个promise状态变更, 再执行待执行then方法数组方法, 这个就是发布订阅模式吧
+
+```js
+// 改造Promise构造函数,增加onFulfilledCallbackList onRejectedCallbackList
+function CustomPromise (fn) {
+  //...
+  // 这个来存储then方法执行函数, 等待promise状态变更时候,遍历这里面待执行的函数
+  this.onFulfilledCallbackList = []
+  this.onRejectedCallbackList = []
+  // ...
+}
+
+
+
+// 此时then方法,需要调整
+CustomPromise.prototype.then = function (onFulfilled, onRejected) {
+  if (this.status === RESOLVED) {
+    onFulfilled(this.value)
+  } else if (this.status === REJECTED) {
+    onRejected(this.errorVal)
+  } else {
+    // 在前一个promise处于pending状态的时候, 需要把待执行then的回调方法
+    // 放入到onFulfilledList onRejectedList的待执行then方法数组中
+    this.onFulfilledCallbackList.push(onFulfilled)
+    this.onRejectedCallbackList.push(onRejected)
+  }
+}
+
+// 同时改造resolve函数
+function customResolve(value) {
+  if (this.status === PENDING) {
+    this.status = RESOLVED
+    this.value = value
+  }
+  // 直接借鉴参考文档方法
+  while (this.onFulfilledCallbackList.length) {
+    this.onFulfilledCallbackList.shift()(value)
+  }
+}
+
+// 同时改造reject函数
+function customReject (error) {
+  if (this.status === PENDING) {
+    this.status = REJECTED
+    this.errorVal = error
+  }
+  // 直接借鉴参考文档方法
+  while (this.onFulfilledCallbackList.length) {
+    this.onRejectedCallbackList.shift()(error)
+  }
+}
+
+// 此时我们采用改造后Promise, 在第一个promise加入异步
+// 然后多次调用then方法
+let promise3 = new CustomPromise(function (resolve, reject) {
+  setTimeout(()=> {
+    resolve('我是setTimeout之后的resolve')
+  }, 3000)
+})
+
+promise3.then((value) => {
+  console.log('then 第一次 resolve', value)
+}, (error) => {
+    console.log('then 第二次 reject', error)
+})
+
+promise3.then((value) => {
+  console.log('then 第二次 resolve', value)
+}, (error) => {
+    console.log('then 第二次 reject', error)
+})
+
+// 按照我们的预期,等第一个promise状态更改之后,才执行then方法
+// then 第一次 resolve 我是setTimeout之后的resolve
+// then 第二次 resolve 我是setTimeout之后的resolve
+```
+[完整代码详见v2](./code/promise-v2.js)
 
 ### 参考文档
 
-如果相对Promise更加详情了解，可点击下面这些文档
-
 [Promise 对象](https://es6.ruanyifeng.com/#docs/promise)
+[从一道让我失眠的 Promise 面试题开始，深入分析 Promise 实现细节](https://juejin.cn/post/6945319439772434469)
