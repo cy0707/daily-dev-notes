@@ -40,7 +40,12 @@ function CustomPromise (fn) {
   this.onFulfilledCallbackList = []
   this.onRejectedCallbackList = []
   // 方法的调用
-  fn(customResolve.bind(this), customReject.bind(this))
+  try {
+    fn(customResolve.bind(this), customReject.bind(this))
+  } catch (error) {
+    // 如果有错误，就直接执行 reject
+    customReject.bind(this, error)
+  }
 }
 
 // 此时then方法,需要调整

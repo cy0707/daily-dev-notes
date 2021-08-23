@@ -96,7 +96,12 @@ function CustomPromise (fn) {
   // promise error
   this.errorVal = undefined
   // 方法的调用
-  fn(customResolve.bind(this), customReject.bind(this))
+  try {
+     fn(customResolve.bind(this), customReject.bind(this))
+  } catch (error) {
+    // 如果有错误，就直接执行 reject
+    customReject.bind(this, error)
+  }
 }
 
 let promise1 = new CustomPromise(function (resolve, reject) {
@@ -235,6 +240,26 @@ promise3.then((value) => {
 // then 第二次 resolve 我是setTimeout之后的resolve
 ```
 [完整代码详见v2](./code/promise-v2.js)
+
+> 我们得继续完善then方法, 此时then方法还没有满足链式调用以及返回新的promise
+
+```js
+// 这里没懂起, 得好好理解
+CustomPromise.prototype.then = function (onFulfilled, onRejected) {
+  const newCustomePromise = new CustomPromise((resolve, reject) => {
+    if (this.status === RESOLVED) {
+      onFulfilled(this.value)
+    } else if (this.status === REJECTED) {
+      onRejected(this.errorVal)
+    } else {
+      this.onFulfilledCallbackList.push(onFulfilled)
+      this.onRejectedCallbackList.push(onRejected)
+    }
+  })
+  return newCustomePromise
+}
+```
+
 
 ### 参考文档
 

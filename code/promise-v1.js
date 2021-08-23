@@ -29,7 +29,12 @@ function CustomPromise (fn) {
   // promise error
   this.errorVal = undefined
   // 方法的调用
-  fn(customResolve.bind(this), customReject.bind(this))
+  try {
+    fn(customResolve.bind(this), customReject.bind(this))
+  } catch (error) {
+    // 如果有错误，就直接执行 reject
+    customReject.bind(this, error)
+  }
 }
 
 let promise1 = new CustomPromise(function (resolve, reject) {
