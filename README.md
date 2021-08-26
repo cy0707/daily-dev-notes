@@ -6,8 +6,8 @@
 
 1. [context执行上下文](./learning/context.md)
 2. [new关键字的理解](./learning/new.md)
-1. [对this的理解感悟](./learning/this.md)
-1. [手动实现promise](./learning/promise.md)
+3. [对this的理解感悟](./learning/this.md)
+4. [手动实现promise](./learning/promise.md)
 
 ## 工作中遇到的问题/TODO
 
