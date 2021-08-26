@@ -287,7 +287,9 @@ function handleThenResultFun (thenResolveResult, resolve, reject) {
   // 返回一个新的promise状态更改后，才会执行
   if (thenResolveResult instanceof CustomPromise) {
     // thenResolveResult状态更改后，才能改变then方法返回的Promise状态
-    // 即then的Promise的结果===>依赖then里面方法体的promise状态
+    // 即then的Promise的结果===>依赖then里面方法体的promise状态,
+    // 就直接采用采用方法体里面promise的then方法，方法体里面promise状态更改之后
+    // 才变更then方法返回的promise状态，即参数为promise的resolve,reject的状态变更
     thenResolveResult.then(resolve, reject)
   // then reslove一个普通值, 那么直接执行promise2的resolve,更改promise的状态
   } else {
@@ -324,6 +326,8 @@ CustomPromise.prototype.then = function (onFulfilled, onRejected) {
   return customPromise2;
 };
 ```
+
+[完整代码详见 v3](./code/promise-v2.js)
 
 ### 参考文档
 

@@ -49,26 +49,18 @@ function CustomPromise (fn) {
 }
 
 function handleThenResultFun (thenResolveResult, resolve, reject) {
-  // 返回一个新的promise状态更改后，才会执行
   if (thenResolveResult instanceof CustomPromise) {
-    // thenResolveResult状态更改后，才能改变then方法返回的Promise状态
-    // 即then的Promise的结果===>依赖then里面方法体的promise状态
     thenResolveResult.then(resolve, reject)
-  // then reslove一个普通值, 那么直接执行promise2的resolve,更改promise的状态
   } else {
     resolve(thenResolveResult)
   }
 }
 
-// 此时then方法,需要调整
+
 CustomPromise.prototype.then = function (onFulfilled, onRejected) {
   const that = this
-  // 1. 返回一个新的promise
   const customPromise2 = new CustomPromise(function (resolve, reject) {
-    // 这里判断是上一个promise1的状态，那么需要注意this的指代
     if (that.status === RESOLVED) {
-      //前一个promise的更改为reslove状态，执行then回调方法
-      // 这里返回可以是一个普通值，或者一个另一个promise
       const thenResolveResult = onFulfilled(that.value);
       handleThenResultFun(thenResolveResult, resolve, reject)
     } else if (that.status === REJECTED) {
