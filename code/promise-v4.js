@@ -48,7 +48,10 @@ function CustomPromise (fn) {
   }
 }
 
-function handleThenResultFun (thenResolveResult, resolve, reject) {
+function handleThenResultFun (thenReturnPromise, thenResolveResult, resolve, reject) {
+  if (thenReturnPromise === thenResolveResult) {
+    return reject(new TypeError('Chaining cycle detected for promise!'))
+  }
   if (thenResolveResult instanceof CustomPromise) {
     thenResolveResult.then(resolve, reject)
   } else {
@@ -59,27 +62,44 @@ function handleThenResultFun (thenResolveResult, resolve, reject) {
 
 CustomPromise.prototype.then = function (onFulfilled, onRejected) {
   const that = this
+  // then的resolve，reject方法是可选的
+  onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : function (value) {
+    return value
+  }
+  onRejected = typeof onRejected === 'function' ? onRejected : function (error) {
+    throw error
+  }
+  // 错误处理
   const customPromise2 = new CustomPromise(function (resolve, reject) {
+    const handleOnFulfilled = function (value) {
+      try {
+        const thenResolveResult = onFulfilled(value);
+        handleThenResultFun(customPromise2, thenResolveResult, resolve, reject)
+      } catch (error) {
+        reject(error)
+      }
+    }
+    const handleOnRejected = function (errorVal) {
+      try {
+        const thenResolveResult = onRejected(errorVal);
+        handleThenResultFun(customPromise2,thenResolveResult, resolve, reject)
+      } catch (error) {
+        reject(error)
+      }
+    }
+
     if (that.status === RESOLVED) {
-      const thenResolveResult = onFulfilled(that.value);
-      handleThenResultFun(thenResolveResult, resolve, reject)
+      handleOnFulfilled(that.value)
     } else if (that.status === REJECTED) {
-      const thenResolveResult = onRejected(that.errorVal);
-      handleThenResultFun(thenResolveResult, resolve, reject)
+      handleOnRejected(value.errorVal)
     } else {
-      that.onFulfilledCallbackList.push(function () {
-        const thenResolveResult = onFulfilled(that.value);
-        handleThenResultFun(thenResolveResult, resolve, reject)
-      })
-      that.onRejectedCallbackList.push(function () {
-        const thenResolveResult = onRejected(that.errorVal);
-        handleThenResultFun(thenResolveResult, resolve, reject)
-      })
+      that.onFulfilledCallbackList.push(handleOnFulfilled)
+      that.onRejectedCallbackList.push(handleOnRejected)
     }
   });
 
   return customPromise2;
-};
+}
 
 // test
 new CustomPromise((resolve) => {
@@ -89,14 +109,7 @@ new CustomPromise((resolve) => {
   }, 500);
 })
   // then1
-  .then((res) => {
-    console.log(res, "then1");
-    return new CustomPromise(function (resolve, reject) {
-      setTimeout(() => {
-        resolve("then1的promise");
-      }, 2000)
-    });
-  })
+  .then()
   // then2
   .then((res) => {
     console.log(res, "then2");

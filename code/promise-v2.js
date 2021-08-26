@@ -22,7 +22,7 @@ function customReject (error) {
     this.errorVal = error
   }
   // 直接借鉴参考文档方法
-  while (this.onFulfilledCallbackList.length) {
+  while (this.onRejectedCallbackList.length) {
     this.onRejectedCallbackList.shift()(error)
   }
 }

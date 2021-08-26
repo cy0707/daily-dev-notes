@@ -283,7 +283,10 @@ new Promise((resolve) => {
 ```
 
 ```js
-function handleThenResultFun (thenResolveResult, resolve, reject) {
+function handleThenResultFun (thenReturnPromise,thenResolveResult, resolve, reject) {
+  if (thenReturnPromise === thenResolveResult) {
+    return reject(new TypeError('Chaining cycle detected for promise!'))
+  }
   // 返回一个新的promise状态更改后，才会执行
   if (thenResolveResult instanceof CustomPromise) {
     // thenResolveResult状态更改后，才能改变then方法返回的Promise状态
@@ -307,18 +310,21 @@ CustomPromise.prototype.then = function (onFulfilled, onRejected) {
       //前一个promise的更改为reslove状态，执行then回调方法
       // 这里返回可以是一个普通值，或者一个另一个promise
       const thenResolveResult = onFulfilled(that.value);
-      handleThenResultFun(thenResolveResult, resolve, reject)
+      handleThenResultFun(customPromise2, thenResolveResult, resolve, reject)
     } else if (that.status === REJECTED) {
       const thenResolveResult = onRejected(that.errorVal);
-      handleThenResultFun(thenResolveResult, resolve, reject)
+      handleThenResultFun(customPromise2,thenResolveResult, resolve, reject)
     } else {
       that.onFulfilledCallbackList.push(function () {
         const thenResolveResult = onFulfilled(that.value);
-        handleThenResultFun(thenResolveResult, resolve, reject)
+        // 因为then方法返回的customPromise2
+        // 和then方法体返回的thenResolveResult的promise不能相等
+        // 不然就出现死循环，自己等自己可还行！！！
+        handleThenResultFun(customPromise2, thenResolveResult, resolve, reject)
       })
       that.onRejectedCallbackList.push(function () {
         const thenResolveResult = onRejected(that.errorVal);
-        handleThenResultFun(thenResolveResult, resolve, reject)
+        handleThenResultFun(customPromise2, thenResolveResult, resolve, reject)
       })
     }
   });
@@ -327,7 +333,62 @@ CustomPromise.prototype.then = function (onFulfilled, onRejected) {
 };
 ```
 
-[完整代码详见 v3](./code/promise-v2.js)
+[完整代码详见 v3](./code/promise-v3.js)
+
+
+## promise细节的完善
+
+理解到上面的那种情况，promise的本质大致就掌握了，还有一些错误和异常处理,
+以及then方法的resolve，rejected的是可选的处理。
+
+```js
+CustomPromise.prototype.then = function (onFulfilled, onRejected) {
+  const that = this
+  // then的resolve，reject方法是可选的
+  onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : function (value) {
+    return value
+  }
+  onRejected = typeof onRejected === 'function' ? onRejected : function (error) {
+    throw error
+  }
+  // 错误处理
+  const customPromise2 = new CustomPromise(function (resolve, reject) {
+    const handleOnFulfilled = function (value) {
+      try {
+        const thenResolveResult = onFulfilled(value);
+        handleThenResultFun(customPromise2, thenResolveResult, resolve, reject)
+      } catch (error) {
+        reject(error)
+      }
+    }
+    const handleOnRejected = function (errorVal) {
+      try {
+        const thenResolveResult = onRejected(errorVal);
+        handleThenResultFun(customPromise2,thenResolveResult, resolve, reject)
+      } catch (error) {
+        reject(error)
+      }
+    }
+
+    if (that.status === RESOLVED) {
+      handleOnFulfilled(that.value)
+    } else if (that.status === REJECTED) {
+      handleOnRejected(value.errorVal)
+    } else {
+      that.onFulfilledCallbackList.push(handleOnFulfilled)
+      that.onRejectedCallbackList.push(handleOnRejected)
+    }
+  });
+
+  return customPromise2;
+}
+```
+[完整代码详见 v4](./code/promise-v4.js)
+
+
+> 最后，以上是本人从书中，教程，以及各位大佬分享的博文中，学习感悟总结得出，如果错误，还请各位小伙伴指正！
+
+如果需要实现满足promiseA+规范更加完善的promise的话，可参考下面的链接。
 
 ### 参考文档
 
