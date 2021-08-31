@@ -66,7 +66,7 @@ chrome.exe                   16152 Console                    1    112,276 K
 
 ### 事件循环
 
-单线程的js -> 主线程（Main Thread）-> 渲染进程（Renderer Process）
+js单线程：即js代码在浏览器的渲染进程（Renderer Process）中主线程（Main Thread））中被执行。
 
 * 宏任务
   * script(整体代码)
