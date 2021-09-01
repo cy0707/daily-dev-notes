@@ -66,7 +66,19 @@ chrome.exe                   16152 Console                    1    112,276 K
 
 ### 事件循环
 
-js单线程：即js代码在浏览器的渲染进程（Renderer Process）中主线程（Main Thread））中被执行。
+当我们打开chrome浏览器，会产生那些进程呢，详情下图：
+![浏览器进程](../src/event6.png)
+
+我们可以打开chrome浏览器，点击performance，可以看看这些进程的具体详情
+![浏览器进程](../src/event3.png)
+
+**js单线程**即js代码在浏览器的渲染进程（Renderer Process）的主线程（Main Thread）的中）中被执行。
+
+主线程非常繁忙，既要处理 DOM，又要计算样式，还要处理布局，同时还需要处理 JavaScript 任务以及各种输入事件，还有一些异步任务，setTimeout，promise, await等等，且渲染进程的主线程只有一个，那么他是如何有条不紊地完成了这些任务呢？他就是靠着消息队列和事件循环系统，来统筹调度这些任务。
+
+![事件循环](../src/event4.png)
+
+> 消息队列的任务分类：
 
 * 宏任务
   * script(整体代码)
@@ -89,3 +101,4 @@ js单线程：即js代码在浏览器的渲染进程（Renderer Process）中主
 [浅析JS中的堆内存与栈内存](https://www.cnblogs.com/heioray/p/9487093.html)
 [Loupe是一种可视化工具，可以帮助您了解JavaScript的调用堆栈/事件循环/回调队列如何相互影响](http://latentflip.com/loupe/)
 [JavaScript中的Event Loop（事件循环）机制](https://zhuanlan.zhihu.com/p/145383822)
+[浏览器工作原理与实践](https://time.geekbang.org/column/article/132931)
