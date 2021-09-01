@@ -66,32 +66,47 @@ chrome.exe                   16152 Console                    1    112,276 K
 
 ### 事件循环
 
-当我们打开chrome浏览器，会产生那些进程呢，详情下图：
+当我们打开chrome浏览器，会产生那些进程呢，详情见下图：
 ![浏览器进程](../src/event6.png)
 
-我们可以打开chrome浏览器，点击performance，可以看看这些进程的具体详情
+我们可以打开chrome浏览器，点击performance，可以看看某些进程使用的具体详情
 ![浏览器进程](../src/event3.png)
 
-**js单线程**即js代码在浏览器的渲染进程（Renderer Process）的主线程（Main Thread）的中）中被执行。
+**渲染进程（（Renderer Process））是多线程，分为以下几类**
+1. GUI渲染线程: 负责渲染浏览器界面，解析HTML，CSS，构建DOM树和RenderObject树，布局和绘制等
+2. JS引擎线程：JS内核，负责处理Javascript脚本程序(例如V8引擎),负责解析Javascript脚本，运行代码
+3. 事件触发线程: 属于浏览器而不是JS引擎，用来控制事件循环，并且管理着一个事件队列(task queue)
+4. 定时触发器线程: 因为JavaScript引擎是单线程的，如果处于阻塞线程状态就会影响记计时的准确, 所以需要单独的即setInterval与setTimeout所在线程
+5. 异步http请求线程：在XMLHttpRequest在连接后是通过浏览器新开一个线程请求
 
-主线程非常繁忙，既要处理 DOM，又要计算样式，还要处理布局，同时还需要处理 JavaScript 任务以及各种输入事件，还有一些异步任务，setTimeout，promise, await等等，且渲染进程的主线程只有一个，那么他是如何有条不紊地完成了这些任务呢？他就是靠着消息队列和事件循环系统，来统筹调度这些任务。
+**js单线程即js代码在浏览器的渲染进程（Renderer Process）的主线程（Main Thread-->JS引擎线程）中被执行**。
+
+主线程非常繁忙，既要处理 DOM，又要计算样式，还要处理布局，同时还需要处理 JavaScript 任务以及各种输入事件，还有setTimeout，
+setInterval等等，那么他是如何有条不紊地完成了这些任务呢？他就是靠着消息队列和事件循环系统，来统筹调度这些任务。
 
 ![事件循环](../src/event4.png)
 
-> 消息队列的任务分类：
+![事件循环](../src/event7.png)
 
-* 宏任务
+> 宏任务（macro-task）/微任务（micro-task）
+
+* 宏任务（macro-task）
   * script(整体代码)
   * setTimeout
   * setInterval
   * setImmediate
   * I/O
   * UI render
-* 微任务
+* 微任务（micro-task）
   * process.nextTick
   * Promise
   * Async/Await(实际就是promise)
   * MutationObserver(html5新特性)
+
+
+js引擎线程，会循环的从消息队列，取出任务，进行执行，如果该任务是异步任务，那么判断这个异步任务是否为宏任务还是微任务，如果微宏任务那么把其回调任务添加宏任务列表中，不然就添加到微任务列表。如果是同步任务，那么就直接执行。
+
+当消息队列任务队列为空的话，那么先清空微任务列表，再清空宏任务列表。
 
 ### 参考文档
 
@@ -102,3 +117,4 @@ chrome.exe                   16152 Console                    1    112,276 K
 [Loupe是一种可视化工具，可以帮助您了解JavaScript的调用堆栈/事件循环/回调队列如何相互影响](http://latentflip.com/loupe/)
 [JavaScript中的Event Loop（事件循环）机制](https://zhuanlan.zhihu.com/p/145383822)
 [浏览器工作原理与实践](https://time.geekbang.org/column/article/132931)
+[「硬核JS」一次搞懂JS运行机制](https://juejin.cn/post/6844904050543034376)
