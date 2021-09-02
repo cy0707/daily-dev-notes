@@ -8,6 +8,7 @@
 2. [new关键字的理解](./learning/new.md)
 3. [对this的理解感悟](./learning/this.md)
 4. [手动实现promise](./learning/promise.md)
+5. [事件循环的理解](./learning/event.md)
 
 ## 工作中遇到的问题/TODO
 
