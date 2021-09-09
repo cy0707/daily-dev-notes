@@ -9,6 +9,7 @@
 3. [对this的理解感悟](./learning/this.md)
 4. [手动实现promise](./learning/promise.md)
 5. [事件循环的理解](./learning/event.md)
+5. [viewport以及移动端适配小知识点](./learning/viewport.md)
 
 ## 工作中遇到的问题/TODO
 
