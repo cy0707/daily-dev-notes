@@ -1,38 +1,36 @@
 ## 定义
 
-<!-- https://github.com/GraphQLCollege/fullstack-graphql/blob/master/manuscript/chapter-0.md -->
+`GraphQL` 是一种用于设计和查询数据的领域特定类型语言（`Domain Specific Language`即`DSL`）。
 
+定义的每个字我们都认识，但是连起来还是似懂非懂的感觉，我们拆分一下其定义：
 
-GraphQL 是一种用于设计和查询数据的领域特定类型语言（Domain Specific Language即DSL）--即一种用于 API 的查询语言
+1.  是一个语言（即一种规范）即定义了这种查询语言语法如何、具体的语句如何执行等。
 
-定义太笼统，拆分一下其定义：
+答：就比如人饿了，需要吃饭，那么我们都需要吃饭，你想吃什么就吃什么。那么就允许任何人用任何编程语言实现 `GraphQL`这个规范，例如`JavaScript` 中有一个官方实现叫做 `graphql-js`的包，这个包就实现 `GraphQL`的规范。我们可以这样类比：`GraphQL`和的`graphql-js`关系, 就像 `EcmaScript` 与 `JavaScript` 的关系。
 
-1.  是一个语言（即一种规范）
-即只定义了这种查询语言语法如何、具体的语句如何执行等，允许任何人用任何编程语言实现 GraphQL。
-JavaScript 中有一个官方实现叫做 graphql-js的包，GraphQL和的graphql-js关系, 就像 EcmaScript 与 JavaScript 的关系。
-2. 类型类似于ts, 每一个字段，都要其特定的类型，它还使用类型来静态检查错误。
-3. 领域特定--> 特定领域是数据。
-领域特定语言 （html, css这些只能单一作用浏览器）
-通用语言（js 即可以开发前端，又可以用于服务端）
-4. 可以设计数据（？），同时也可以查询数据，例如：在server对数据建模，客户端用graphql编写查询来获取特定的数据。
+2. 类型语言，其中类型的意思，指的是什么？
 
+答：就类似于`ts/java`, 每一个字段，都要其特定的类型，静态检查会检测类型。
 
+3. 领域特定语言，领域特定这个词应该如何理解呢？
 
+答：例如`html`, `css`这些只能单一作用于浏览器，那么就被称为领域特定语言，`js`这门语言，既可以用于前端开发，
+又可以用于服务端，那么这样的语言就被成为同样语言。
 
+4. 可以设计数据，同时也可以查询数据？
 
-## 和http的关系
+答：在server对返回的数据进行建模`originData`，客户端用graphql编写查询来获取在服务端设计的数据`originData`。
 
-通常，graphql的服务是通过http协议层进行对外公开的，但是并不表示graphlql只能通过http才能对外公开其服务，其他协议也是可以的。
-看一个例子：
+## 前端`graphql-js`/后端`express-graphql`和http的关系
+
+前端`graphql-js`和后端`express-graphql`，这两个包都是实现了GraphQL这个语言规范包。让开发者可以在客户端和服务端，使用GraphQL这个语言进行对api查询。前后端的通信通过http协议进行交流的（当然还有其他协议），GraphQL的查询，是建立在前后端交流的基础之上，如果双方都不能交流，那么就不存在前端查询后端数据的了。
 
 ![通过http发送graphql查询语句](./http.png)
 
 
-## graphql中graph代表什么
+## graphql代表什么
 
 graph + query + language => 图表查询语言
-
-<!-- https://www.apollographql.com/blog/backend/auth/access-control-in-graphql/?_ga=2.38655781.781049328.1624427882-594116982.1624427882 -->
 
 ![graph](./graph.png)
 
@@ -46,7 +44,6 @@ GraphQL 查询只是关于如何遍历图的一组指令。即
 1. 用户可以遍历哪些边（即从一个字段查询其关联下一个或者多个字段）
 2. 用户可以访问哪些节点 （即获取到需要的数据）
 
-<!-- https://juejin.cn/post/6844903795407716366 -->
 ## 几个核心概念
   * Schema
   * Type
@@ -66,8 +63,7 @@ GraphQL 查询只是关于如何遍历图的一组指令。即
 
 ```graphql
 
-# 一个graphql服务，可以没有mutation subscription
-# 但是必须有query
+# 一个graphql服务，可以没有mutation subscription 但是必须有query
 
 schema {
   query: Query
