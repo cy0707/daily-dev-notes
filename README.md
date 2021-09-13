@@ -11,12 +11,10 @@
 5. [事件循环的理解](./learning/event.md)
 5. [viewport以及移动端适配小知识点](./learning/viewport.md)
 
-## 工作中遇到的问题/TODO
+## GraphQL学习系列总结
 
-1. [Vue中v-for循环的ref-img标签第一次获取不到offsetHeight和offsetTop属性](./problemSummary/Vue中关于v-for中ref获取问题.md)
-2. swiper的复制双向联动的activeIndex和realIndex
-3. 高德地图小程序引入的实现--实现关键字搜索，当前位置，移动定点demo
-4. 饿了么小程序中-菜单左右联动实现
+1. [GraphQL的初识](./graphql/graph1.md)
+1. [GraphQL的类型](./graphql/graph2.md)
 
 ## Wechat
 
@@ -30,6 +28,13 @@
 ## Alipay
 
 * [基于uni-app的微信小程序、H5迁移到支付宝小程序问题集合](./Alipay/基于uni-app的微信小程序、H5迁移到支付宝小程序问题集合.md)
+
+## 工作中遇到的问题/TODO
+
+1. [Vue中v-for循环的ref-img标签第一次获取不到offsetHeight和offsetTop属性](./problemSummary/Vue中关于v-for中ref获取问题.md)
+2. swiper的复制双向联动的activeIndex和realIndex
+3. 高德地图小程序引入的实现--实现关键字搜索，当前位置，移动定点demo
+4. 饿了么小程序中-菜单左右联动实现
 
 ## 面试
 
