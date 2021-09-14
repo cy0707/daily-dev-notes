@@ -88,8 +88,8 @@ fetch('/graphql', {
 
 ```js
 type Query {
-  listById: [List]
-  userById: User
+  ListById(id: ID!): List
+  UserById(id: ID!): User
 }
 ```
 
