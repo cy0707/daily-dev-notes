@@ -86,8 +86,10 @@ let promise2 = new CustomPromise(function (resolve, reject) {
   resolve(promise1);
 });
 
+console.log('promise1状态', JSON.stringify(promise1))
+console.log('promise2状态', JSON.stringify(promise2))
+
 setTimeout(() => {
-  console.log("============================");
-  console.log(promise1, "最后结果p1");
-  console.log(promise2, "最后结果p2");
-}, 2000);
+  console.log('promise1-1状态', JSON.stringify(promise1))
+  console.log('promise2-1状态', JSON.stringify(promise2))
+}, 2000)
