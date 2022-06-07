@@ -11,6 +11,10 @@
 5. [事件循环的理解](./learning/event.md)
 5. [viewport以及移动端适配小知识点](./learning/viewport.md)
 
+## vue系列感悟
+
+1. [读《深入浅出 Vue.js》之 Object 的变化侦测笔记（一）](./learning/vue1.md)
+
 ## GraphQL学习系列总结
 
 1. [GraphQL的初识](./graphql/graph1.md)
