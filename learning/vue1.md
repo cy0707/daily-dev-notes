@@ -44,7 +44,7 @@ a.key1 = 2 // 设置key1的时候，触发setter函数
 
     * 依赖者不止一个，一个对象的key值，可能有多个依赖，那么依赖者，应该是一个数组
     * 假设依赖者是一个函数，保存在window.target上（暂时假设，后面详述，先跟着作者思路来）
-    * 此时，我们改造以下defineReactive方式（[具体代码详情见V1](../code/vue1.js))
+    * 此时，我们改造以下defineReactive方式（[具体代码详情见](../code/vue1.js))
 
 6. **window.target这个依赖具体指的是什么？**
 

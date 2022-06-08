@@ -14,6 +14,7 @@
 ## vue系列感悟
 
 1. [读《深入浅出 Vue.js》之 Object 的变化侦测笔记（一）](./learning/vue1.md)
+1. [读《深入浅出 Vue.js》之 Object 的变化侦测笔记（二）](./learning/vue2.md)
 
 ## GraphQL学习系列总结
 
